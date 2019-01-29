@@ -1,28 +1,34 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { gql } from 'apollo-boost';
+import { Query } from 'react-apollo';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+const ALL_LIFTS_QUERY = gql`
+  query {
+    allLifts {
+      id
+      name
+      status
+      capacity
+    }
   }
-}
+`;
+
+const App = () => (
+  <Query query={ALL_LIFTS_QUERY}>
+    {({ loading, data }) => {
+      if (loading) return <div>Loading...</div>;
+      return (
+        <section>
+          {!loading &&
+            data.allLifts.map(lift => (
+              <div>
+                <h3>{lift.name}</h3>
+              </div>
+            ))}
+        </section>
+      );
+    }}
+  </Query>
+);
 
 export default App;
